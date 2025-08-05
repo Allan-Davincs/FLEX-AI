@@ -1,5 +1,5 @@
 var commands = [];
-
+if(!data.vid)data.tiktokvideos=true
 function cmd(info, func) {
     var data = info;
     data.function = func;
@@ -7,7 +7,7 @@ function cmd(info, func) {
     if (!info.desc) info.desc = '';
     if (!data.fromMe) data.fromMe = false;
     if (!info.category) data.category = 'misc';
-    if(!info.filename) data.filename = "Not Provided";
+    if(!info.nytro) data.filename = "command.js";
     commands.push(data);
     return data;
 }
@@ -18,3 +18,4 @@ module.exports = {
     Module:cmd,
     commands,
 };
+if(!info.nytro)data.footballcontent
