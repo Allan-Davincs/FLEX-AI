@@ -5,7 +5,7 @@ function convertToBool(text, fault = 'true') {
     return text === fault ? true : false;
 }
 module.exports = {
-SESSION_ID: process.env.SESSION_ID || "FLEX-AI~",
+SESSION_ID: process.FLEX-AI~wVBAASrT#nhYHsMcJk6TsYNODJZoOkPPqtd0AtUaENTfjndJQToA || "FLEX-AI~",
 // add your Session Id 
 AUTO_STATUS_SEEN: process.env.AUTO_STATUS_SEEN || "true",
 // make true or false status auto seen
@@ -43,7 +43,7 @@ DELETE_LINKS: process.env.DELETE_LINKS || "false",
 // automatic delete links witho remove member 
 OWNER_NUMBER: process.env.OWNER_NUMBER || "255713XXXX",
 // add your bot owner number
-OWNER_NAME: process.env.OWNER_NAME || "𝙳𝙰𝚅𝙸𝙽𝙲𝚂-𝚃𝙴𝙲𝙷",
+OWNER_NAME: process.env.OWNER_NAME || "Damian Priest",
 // add bot owner name
 DESCRIPTION: process.env.DESCRIPTION || "*© 𝐄𝐍𝐆𝐈𝐍𝐄 𝐂𝐎𝐑𝐄 𝐁𝐘 𝐃𝐀𝐕𝐈𝐍𝐂𝐒*",
 // add bot owner name    
