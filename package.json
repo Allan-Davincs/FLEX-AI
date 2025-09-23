@@ -1,12 +1,12 @@
 {
-  "name": "FLEX-AI",
+  "name": "ZEPHYR-AI",
   "version": "4.5.0",
-  "description": "A WhatsApp Bot Created By allan davincs crafting core ai features on whatsapp",
+  "description": "A WhatsApp Bot Created By Tony  crafting core ai features on whatsapp",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js --deep-monitoring --attach --name FLEX-AI",
-    "stop": "pm2 stop FLEX-AI",
-    "restart": "pm2 restart FLEX-AI"
+    "start": "pm2 start index.js --deep-monitoring --attach --name ZEPHYR-AI",
+    "stop": "pm2 stop ZEPHYR-AI",
+    "restart": "pm2 restart ZEPHYR-AI"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "6.7.18",
