@@ -1,0 +1,41 @@
+const { cmd } = require('../lib/command'); // hakikisha path sahihi kwa framework yako
+
+cmd({
+    pattern: "antimention",  // command ya ku-manage feature
+    desc: "Zuia watu kutaja group (tag all)",
+    category: "group",
+    fromMe: true, // ili wewe admin tu ndo unaweza ku-control
+    filename: __filename
+}, async (message, match) => {
+    if (!message.isGroup) return message.reply("⚠️ Hii command inafanya kazi kwenye magroup tu.");
+
+    let action = match.trim().toLowerCase();
+    if (action === "on") {
+        global.antiMentionGroups = global.antiMentionGroups || {};
+        global.antiMentionGroups[message.jid] = true;
+        return message.reply("✅ Anti-Group Mention imewashwa kwenye group hili.");
+    } else if (action === "off") {
+        if (global.antiMentionGroups && global.antiMentionGroups[message.jid]) {
+            delete global.antiMentionGroups[message.jid];
+        }
+        return message.reply("❌ Anti-Group Mention imezimwa kwenye group hili.");
+    } else {
+        return message.reply("ℹ️ Tumia: `.antimention on` au `.antimention off`");
+    }
+});
+
+// Listener kudetect mtu akitumia @all au ku-mention kila mtu
+cmd({
+    pattern: "detectMention",
+    dontAddCommandList: true // isionekane kwenye list ya commands
+}, async (message) => {
+    if (!message.isGroup) return;
+    if (!global.antiMentionGroups || !global.antiMentionGroups[message.jid]) return;
+
+    // angalia kama message ina mentions nyingi au @all
+    if (message.mention && message.mention.length > 5) {
+        await message.reply("🚫 Hii group haikubali mass mentions!");
+        // unaweza pia ukamdelete msg kama bot yako ina hiyo option
+        // await message.delete();
+    }
+});
