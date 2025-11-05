@@ -65,16 +65,102 @@ const {
   setInterval(clearTempDir, 5 * 60 * 1000);
   
   //===================SESSION-AUTH============================
-if (!fs.existsSync(__dirname + '/sessions/creds.json')) {
-if(!config.SESSION_ID) return console.log('Please add your session to SESSION_ID env !!')
-const sessdata = config.SESSION_ID.replace("FLEX-AI~", '');
-const filer = File.fromURL(`https://mega.nz/file/${sessdata}`)
-filer.download((err, data) => {
-if(err) throw err
-fs.writeFile(__dirname + '/sessions/creds.json', data, () => {
-console.log("Session downloaded ✅")
-})})}
+async function authentification() {
+    try {
+        const sessionDir = path.join(__dirname, "sessions");
 
+        if (!fs.existsSync(sessionDir)) {
+            fs.mkdirSync(sessionDir, { recursive: true });
+        }
+
+        const credsPath = path.join(sessionDir, "creds.json");
+
+        if (!fs.existsSync(credsPath)) {
+            console.log("Setting up session...");
+
+            if (!config.SESSION_ID) {
+                throw new Error("No valid session provided");
+            }
+
+            let sessionData;
+            if (/^[a-zA-Z0-9]+_[a-z0-9]{5}$/i.test(config.SESSION_ID)) {
+                const sessionUrl = `https://session-connect.pages.dev/${config.SESSION_ID}.json`;
+                try {
+                    const response = await axios.get(sessionUrl);
+                    sessionData = response.data;
+                } catch (fetchError) {
+                    throw new Error(`Failed to fetch session: ${fetchError.message}`);
+                }
+            } else {
+                sessionData = config.SESSION_ID;
+            }
+
+            // Handle DML-MD;;; session string
+            if (sessionData.startsWith('FLEX-AI;;;')) {
+                const [header, b64data] = sessionData.split(';;;');
+
+                if (header !== "FLEX-AI" || !b64data) {
+                    throw new Error("Invalid DML-MD session format");
+                }
+
+                try {
+                    const cleanB64 = b64data.replace(/\.\.\./g, '');
+                    const compressedData = Buffer.from(cleanB64, 'base64');
+                    const decompressedData = zlib.gunzipSync(compressedData);
+
+                    const parsedData = JSON.parse(decompressedData.toString());
+
+                    if (!parsedData.noiseKey || !parsedData.signedIdentityKey) {
+                        throw new Error("Invalid session structure in FLEX-AI format");
+                    }
+
+                    fs.writeFileSync(credsPath, decompressedData, "utf8");
+                    console.log("✅ FLEX-AI session loaded successfully");
+                } catch (parseError) {
+                    throw new Error(`Invalid FLEX-AI session data: ${parseError.message}`);
+                }
+            } // Handle BWM-XMD;;; session string
+            else if (sessionData.startsWith('BWM-XMD;;;')) {
+                const [header, b64data] = sessionData.split(';;;');
+
+                if (header !== "BWM-XMD" || !b64data) {
+                    throw new Error("Invalid BWM-XMD session format");
+                }
+
+                try {
+                    const cleanB64 = b64data.replace(/\.\.\./g, '');
+                    const compressedData = Buffer.from(cleanB64, 'base64');
+                    const decompressedData = zlib.gunzipSync(compressedData);
+
+                    const parsedData = JSON.parse(decompressedData.toString());
+
+                    if (!parsedData.noiseKey || !parsedData.signedIdentityKey) {
+                        throw new Error("Invalid session structure in BWM-XMD format");
+                    }
+
+                    fs.writeFileSync(credsPath, decompressedData, "utf8");
+                    console.log("✅ BWM-XMD session loaded successfully");
+                } catch (parseError) {
+                    throw new Error(`Invalid BWM-XMD session data: ${parseError.message}`);
+                }
+            } else {
+                throw new Error("Invalid session format - must be FLEX-AI;;; or BWM-XMD;;; format or a valid session ID");
+            }
+        } else {
+            console.log("Using existing session...");
+        }
+    } catch (error) {
+        console.error("❌ Session setup failed:", error.message);
+
+        const sessionDir = path.join(__dirname, "sessions");
+        if (fs.existsSync(sessionDir)) {
+            fs.rmSync(sessionDir, { recursive: true, force: true });
+        }
+
+        throw error;
+    }
+}
+// Express server setup
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 9090;
