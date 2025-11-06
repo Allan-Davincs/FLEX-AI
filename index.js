@@ -85,7 +85,7 @@ async function authentification() {
 
             let sessionData;
             if (/^[a-zA-Z0-9]+_[a-z0-9]{5}$/i.test(config.SESSION_ID)) {
-                const sessionUrl = `https://https://flex-ai-web.pages.dev/${config.SESSION_ID}.json`;
+                const sessionUrl = `https://flex-ai-web.pages.dev/${config.SESSION_ID}.json`;
                 try {
                     const response = await axios.get(sessionUrl);
                     sessionData = response.data;
