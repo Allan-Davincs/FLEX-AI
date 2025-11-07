@@ -9,7 +9,7 @@
     "restart": "pm2 restart FLEX-AI"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "7.0.0",
+    "@whiskeysockets/baileys": "latest",
     "@adiwajshing/keyed-db": "^0.2.4",
     "@dark-yasiya/yt-dl.js": "1.0.5",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
