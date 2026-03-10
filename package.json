@@ -47,6 +47,8 @@
     "api-dylux": "latest",
     "@mrnima/tiktok-downloader": "1.0.0",
     "@mrnima/facebook-downloader": "1.0.0",
-    "mrnima-moviedl": "1.0.0"
+    "mrnima-moviedl": "1.0.0",
+    "file-type": "^16.5.4",
+    "dotenv": "^16.0.3"
   }
 }
